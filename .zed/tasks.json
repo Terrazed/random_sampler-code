@@ -1,0 +1,32 @@
+[
+  {
+    "label": "esp-idf build",
+    "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh && idf.py build",
+    "use_new_terminal": false
+  },
+  {
+    "label": "esp-idf menuconfig",
+    "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh && idf.py menuconfig",
+    "use_new_terminal": false
+  },
+  {
+    "label": "esp-idf set-target",
+    "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh && idf.py set-target esp32c3",
+    "use_new_terminal": false
+  },
+  {
+    "label": "esp-idf flash",
+    "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh && idf.py -p /dev/ttyUSB0 flash",
+    "use_new_terminal": false
+  },
+  {
+    "label": "esp-idf flash & monitor",
+    "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh && idf.py -p /dev/ttyUSB0 flash && idf.py -p /dev/ttyUSB0 monitor",
+    "use_new_terminal": false
+  },
+  {
+    "label": "esp-idf monitor",
+    "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh &&  idf.py -p /dev/ttyUSB0 monitor",
+    "use_new_terminal": false
+  }
+]
