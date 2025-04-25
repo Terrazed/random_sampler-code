@@ -28,5 +28,10 @@
     "label": "esp-idf monitor",
     "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh &&  idf.py -p /dev/ttyUSB0 monitor",
     "use_new_terminal": false
+  },
+  {
+    "label": "esp-idf fullclean",
+    "command": "export IDF_TOOLCHAIN=clang && source $HOME/esp/esp-idf/export.sh &&  idf.py fullclean",
+    "use_new_terminal": false
   }
 ]
