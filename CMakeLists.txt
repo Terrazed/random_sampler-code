@@ -3,4 +3,4 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(/home/trz/esp/esp-idf/tools/cmake/project.cmake)
-project(test02)
+project(random_sampler-code)
