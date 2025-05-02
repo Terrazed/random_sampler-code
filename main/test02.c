@@ -9,6 +9,7 @@
 #include "esp_log.h"
 #include "esp_private/gpio.h"
 #include "esp_err.h"
+#include "sdcard.h"
 #include "soc/gpio_num.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -73,7 +74,7 @@ void app_main(void)
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0008);
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0009);
     tfa9879_register_write_byte(dev_handle, 0x01, 0x08D0);
-    tfa9879_register_write_byte(dev_handle, 0x13, 0x1030);
+    tfa9879_register_write_byte(dev_handle, 0x13, 0x1080);
 
     uint8_t data[2];
     for(int i = 0; i<=0x15; i++){
@@ -88,8 +89,14 @@ void app_main(void)
     ESP_LOGI("I2S", "i2s config");
     i2s_chan_handle_t i2s_chan_handle;
     i2s_init(&i2s_chan_handle);
-    ESP_LOGI("I2S", "i2s write task");
-    xTaskCreate(i2s_write_task, "i2s_write_task", 4096, &i2s_chan_handle, 5, NULL); //play the audio in loop
+    //ESP_LOGI("I2S", "i2s write task");
+    //xTaskCreate(i2s_write_task, "i2s_write_task", 4096, &i2s_chan_handle, 5, NULL); //play the audio in loop
+
+
+
+    // SD card ------------------------------------------------------------------
+
+    sdcard_init();
 
 
     // MAIN LOOP ----------------------------------------------------------------
