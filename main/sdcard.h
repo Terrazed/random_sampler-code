@@ -28,4 +28,9 @@
 
 esp_err_t sdcard_init(void);
 
+esp_err_t sdcard_open_file(FILE *file, const char *path, const char *rw);
+esp_err_t sdcard_close_file(FILE *file);
+
+esp_err_t sdcard_read_bytes(FILE *file, char * output_buffer, uint32_t n_byte, bool offset_file_after);
+
 #endif

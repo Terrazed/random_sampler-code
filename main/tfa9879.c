@@ -59,15 +59,15 @@ void i2s_write_task(void *args){
 
     i2s_chan_handle_t *tx_chan = (i2s_chan_handle_t *)args;
 
-    size_t w_bytes = DATA_SIZE;
+    size_t w_bytes = 0;
 
     uint8_t *w_buf = (uint8_t *)(test_audio+80);
 
 
-    while (w_bytes == DATA_SIZE) {
-        /* Here we load the target buffer repeatedly, until all the DMA buffers are preloaded */
-        ESP_ERROR_CHECK(i2s_channel_preload_data(*tx_chan, w_buf, DATA_SIZE, &w_bytes));
-    }
+    //while (w_bytes == DATA_SIZE) {
+    //    /* Here we load the target buffer repeatedly, until all the DMA buffers are preloaded */
+    //    ESP_ERROR_CHECK(i2s_channel_preload_data(*tx_chan, w_buf, DATA_SIZE, &w_bytes));
+    //}
 
     /* Enable the TX channel */
     ESP_ERROR_CHECK(i2s_channel_enable(*tx_chan));

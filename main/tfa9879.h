@@ -26,9 +26,6 @@
 #define I2S_DOUT_IO                 GPIO_NUM_19            /*!< GPIO number used for I2S DATA OUT */
 
 
-
-
-
 /**
  * @brief Read a sequence of bytes from a TFA9879 registers
  */

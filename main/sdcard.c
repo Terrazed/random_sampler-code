@@ -1,28 +1,19 @@
 #include "sdcard.h"
+#include "esp_err.h"
+
+sdmmc_card_t *card;
 
 esp_err_t sdcard_init(void){
     esp_err_t ret;
 
     esp_vfs_fat_sdmmc_mount_config_t mount_config = VFS_FAT_MOUNT_DEFAULT_CONFIG();
-    sdmmc_card_t *card;
+
     const char mount_point[] = MOUNT_POINT;
 
     ESP_LOGI("SD", "Initializing SD card");
     ESP_LOGI("SD", "Using SPI peripheral");
 
     sdmmc_host_t host = SDSPI_HOST_DEFAULT();
-
-    //sd_pwr_ctrl_ldo_config_t ldo_config = {
-    //    .ldo_chan_id = SD_PWR_IO
-    //};
-    //sd_pwr_ctrl_handle_t pwr_ctrl_handle = NULL;
-
-    //ret = sd_pwr_ctrl_new_on_chip_ldo(&ldo_config, &pwr_ctrl_handle);
-    //if (ret != ESP_OK) {
-    //    ESP_LOGE("SD", "Failed to create a new on-chip LDO power control driver");
-    //    return ret;
-    //}
-    //host.pwr_ctrl_handle = pwr_ctrl_handle;
 
     spi_bus_config_t bus_cfg = {
         .mosi_io_num = MOSI_SD_IO,
@@ -61,7 +52,39 @@ esp_err_t sdcard_init(void){
     // Card has been initialized, print its properties
     sdmmc_card_print_info(stdout, card);
 
-
-
     return ret;
+}
+
+esp_err_t sdcard_open_file(FILE *file, const char *path, const char *rw){
+
+    ESP_LOGI("SD", "Opening file %s", path);
+    file = fopen(path, rw);
+    if (file == NULL) {
+        ESP_LOGE("SD", "Failed to open file");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+esp_err_t sdcard_close_file(FILE *file){
+
+    if(fclose(file) != 0){
+        ESP_LOGE("SD", "Failed to close file");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+
+
+esp_err_t sdcard_read_bytes(FILE *file, char * output_buffer, uint32_t n_byte, bool offset_file_after){
+
+    ESP_LOGI("SD", "caca");
+    //fread(output_buffer, 1, n_byte, file);
+    fgets(output_buffer, n_byte, file);
+    ESP_LOGI("SD", "pipi");
+    if(offset_file_after){
+        fseek(file, n_byte, SEEK_CUR);
+    }
+    ESP_LOGI("SD", "popo");
+
+    return ESP_OK;
 }

@@ -100,7 +100,23 @@ void app_main(void)
 
 
     // MAIN LOOP ----------------------------------------------------------------
+
+    FILE *f = NULL;
+    sdcard_open_file(f, "/sdcard/samples/sample_0.wav", "r");
+
+    char buffer[16+1];
+
+    for (int j = 0; j<32; j++){
+        sdcard_read_bytes(f, buffer, 16, true);
+
+        ESP_LOGI("read", "%x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11], buffer[12], buffer[13], buffer[14], buffer[15]);
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+
+    sdcard_close_file(f);
+
     while (true) {
+
         ESP_LOGI("main", "main loop");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
