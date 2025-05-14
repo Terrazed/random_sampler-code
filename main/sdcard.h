@@ -33,4 +33,6 @@ esp_err_t sdcard_close_file(FILE *file);
 
 esp_err_t sdcard_read_bytes(FILE *file, char * output_buffer, uint32_t n_byte, bool offset_file_after);
 
+esp_err_t s_example_read_file(const char *path);
+
 #endif

@@ -101,6 +101,9 @@ void app_main(void)
 
     // MAIN LOOP ----------------------------------------------------------------
 
+    s_example_read_file("/sdcard/samples/sample_0.wav");
+
+/*
     FILE *f = NULL;
     sdcard_open_file(f, "/sdcard/samples/sample_0.wav", "r");
 
@@ -114,7 +117,7 @@ void app_main(void)
     }
 
     sdcard_close_file(f);
-
+*/
     while (true) {
 
         ESP_LOGI("main", "main loop");

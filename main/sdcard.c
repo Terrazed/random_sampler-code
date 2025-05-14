@@ -1,5 +1,6 @@
 #include "sdcard.h"
 #include "esp_err.h"
+#include <stdio.h>
 
 sdmmc_card_t *card;
 
@@ -57,7 +58,7 @@ esp_err_t sdcard_init(void){
 
 esp_err_t sdcard_open_file(FILE *file, const char *path, const char *rw){
 
-    ESP_LOGI("SD", "Opening file %s", path);
+    ESP_LOGI("SD", "Opening file %s in mode %s", path, rw);
     file = fopen(path, rw);
     if (file == NULL) {
         ESP_LOGE("SD", "Failed to open file");
@@ -78,13 +79,51 @@ esp_err_t sdcard_close_file(FILE *file){
 esp_err_t sdcard_read_bytes(FILE *file, char * output_buffer, uint32_t n_byte, bool offset_file_after){
 
     ESP_LOGI("SD", "caca");
-    //fread(output_buffer, 1, n_byte, file);
     fgets(output_buffer, n_byte, file);
     ESP_LOGI("SD", "pipi");
     if(offset_file_after){
         fseek(file, n_byte, SEEK_CUR);
     }
     ESP_LOGI("SD", "popo");
+
+    return ESP_OK;
+}
+
+esp_err_t s_example_read_file(const char *path)
+{
+    ESP_LOGI("SD", "Reading file %s", path);
+    FILE *f = fopen(path, "r");
+    if (f == NULL) {
+        ESP_LOGE("SD", "Failed to open file for reading");
+        return ESP_FAIL;
+    }
+    //char line[10][10];
+    //for (int16_t j = 0; j<10; j++){
+    //    fgets(line[j], 10, f);
+    //}
+    ESP_LOGI("SD", "Read from file: ");
+    uint32_t counter = 0;
+    while(feof(f) == 0){
+        char a[16];
+        fread(a,1,16,f);
+        for (int16_t i = 0; i<16; i++){
+            printf("0x%02x, ",a[i]);
+        }
+        printf("\n");
+        counter += 16;
+    }
+    ESP_LOGI("SD", "end read, counter: %u", counter);
+
+    fclose(f);
+
+    //ESP_LOGI(TAG, "Read from file: '%s'", line);
+
+    //ESP_LOGI("SD", "Read from file: ");
+    //for (int16_t i = 0; i<10; i++){
+    //    for (int16_t i2 = 0; i2<10; i2++){
+    //        printf("%02X ", line[i][i2]);
+    //    }
+    //}
 
     return ESP_OK;
 }
