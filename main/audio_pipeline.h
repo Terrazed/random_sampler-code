@@ -26,7 +26,7 @@ bool pipeline_initialized = false;
 
 
 esp_err_t audio_pipeline_init(void);
-void audio_pipeline_play_file_task(const char *path);
+void audio_pipeline_play_file(const char *path);
 void audio_pipeline_i2s_task(void* sem_end_task);
 void audio_pipeline_sd_task(void* sem_end_task);
 
