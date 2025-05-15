@@ -82,19 +82,32 @@ esp_err_t sdcard_init(void){
 
 esp_err_t sdcard_open(const char *path){
     esp_err_t ret = ESP_OK;
-
+    work_file = fopen(path, "r");
+    if (work_file == NULL) {
+        ESP_LOGE("SD", "Failed to open file for reading");
+        return ESP_FAIL;
+    }
     return ret;
 }
 
 esp_err_t sdcard_read(uint8_t* const buffer, const uint32_t buffer_size){
     esp_err_t ret = ESP_OK;
 
+    fread(buffer, 1, buffer_size, work_file);
+    if(feof(work_file) != 0) {
+        //TODO: stop reading
+    }
+
     return ret;
 }
 
 esp_err_t sdcard_close(){
     esp_err_t ret = ESP_OK;
-
+    int err = fclose(work_file);
+    if(err != 0){
+        ESP_LOGE("SD", "Failed to close file");
+        ret = ESP_FAIL;
+    }
     return ret;
 }
 
