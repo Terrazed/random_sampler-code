@@ -3,6 +3,7 @@
 #include "esp_log.h"
 
 #include "test_audio.h" // audio file for testing bc the sd card doesnt work yet
+#include <stdint.h>
 
 esp_err_t tfa9879_register_read(i2c_master_dev_handle_t dev_handle, uint8_t reg_addr, uint8_t *data, size_t len){
     return i2c_master_transmit_receive(dev_handle, &reg_addr, 1, data, len, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
@@ -32,6 +33,13 @@ void i2c_master_init(i2c_master_bus_handle_t *bus_handle, i2c_master_dev_handle_
     ESP_ERROR_CHECK(i2c_master_bus_add_device(*bus_handle, &dev_config, dev_handle));
 }
 
+esp_err_t tfa9879_init(void){
+
+    //TODO
+    return ESP_OK;
+}
+
+
 void i2s_init(i2s_chan_handle_t * tx_chan){
     i2s_chan_config_t tx_chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_AUTO, I2S_ROLE_MASTER);
     ESP_ERROR_CHECK(i2s_new_channel(&tx_chan_cfg, tx_chan, NULL));
@@ -53,6 +61,13 @@ void i2s_init(i2s_chan_handle_t * tx_chan){
         },
     };
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(*tx_chan, &tx_std_cfg));
+}
+
+
+void tfa9879_play(const uint8_t* const array, const uint32_t buffer_size){
+
+    // TODO
+
 }
 
 void i2s_write_task(void *args){

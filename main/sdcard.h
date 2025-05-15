@@ -11,6 +11,7 @@
 #include "driver/sdspi_host.h"
 #include "esp_log.h"
 #include "sd_pwr_ctrl_by_on_chip_ldo.h"
+#include <stdint.h>
 #include <sys/unistd.h>
 
 
@@ -28,10 +29,9 @@
 
 esp_err_t sdcard_init(void);
 
-esp_err_t sdcard_open_file(FILE *file, const char *path, const char *rw);
-esp_err_t sdcard_close_file(FILE *file);
-
-esp_err_t sdcard_read_bytes(FILE *file, char * output_buffer, uint32_t n_byte, bool offset_file_after);
+esp_err_t sdcard_open(const char *path);
+esp_err_t sdcard_read(uint8_t* const buffer, const uint32_t buffer_size);
+esp_err_t sdcard_close();
 
 esp_err_t s_example_read_file(const char *path);
 

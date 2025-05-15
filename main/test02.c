@@ -89,14 +89,14 @@ void app_main(void)
     ESP_LOGI("I2S", "i2s config");
     i2s_chan_handle_t i2s_chan_handle;
     i2s_init(&i2s_chan_handle);
-    //ESP_LOGI("I2S", "i2s write task");
-    //xTaskCreate(i2s_write_task, "i2s_write_task", 4096, &i2s_chan_handle, 5, NULL); //play the audio in loop
+    ESP_LOGI("I2S", "i2s write task");
+    xTaskCreate(i2s_write_task, "i2s_write_task", 4096, &i2s_chan_handle, 5, NULL); //play the audio in loop
 
 
 
     // SD card ------------------------------------------------------------------
 
-    sdcard_init();
+    //sdcard_init();
 
 
     // MAIN LOOP ----------------------------------------------------------------

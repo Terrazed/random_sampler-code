@@ -44,12 +44,8 @@ void i2c_master_init(i2c_master_bus_handle_t *bus_handle, i2c_master_dev_handle_
 /**
  * @brief Initialize the TFA9879 amplifier
  */
-//void tfa9879_init(i2c_master_dev_handle_t dev_handle);
+esp_err_t tfa9879_init(void);
 
-/**
- * @brief main loop for the TFA9879 amplifier
- */
-//void tfa9879_main(void);
 
 /**
  * @brief i2s master initialization
@@ -59,12 +55,8 @@ void i2s_init(i2s_chan_handle_t * tx_chan);
 /**
  * @brief tasks that send audio to tfa9879
  */
- void i2s_write_task(void *args);
+ void tfa9879_play(const uint8_t* const array, const uint32_t buffer_size);
 
- /**
-  * @brief send the audio file to the amplifier
-  */
- //void tfa9879_send_audio();
 
 
 #endif
