@@ -26,6 +26,10 @@
 #define I2S_DOUT_IO                 GPIO_NUM_19            /*!< GPIO number used for I2S DATA OUT */
 
 
+i2c_master_bus_handle_t bus_handle;
+i2c_master_dev_handle_t dev_handle;
+i2s_chan_handle_t i2s_chan_handle;
+
 /**
  * @brief Read a sequence of bytes from a TFA9879 registers
  */
@@ -46,6 +50,9 @@ void i2c_master_init(i2c_master_bus_handle_t *bus_handle, i2c_master_dev_handle_
  */
 esp_err_t tfa9879_init(void);
 
+esp_err_t tfa9879_power_up();
+esp_err_t tfa9879_power_down();
+
 
 /**
  * @brief i2s master initialization
@@ -57,6 +64,8 @@ void i2s_init(i2s_chan_handle_t * tx_chan);
  */
  void tfa9879_play(const uint8_t* const array, const uint32_t buffer_size);
 
+
+ void i2s_write_task(void *args);
 
 
 #endif

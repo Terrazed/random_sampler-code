@@ -35,7 +35,17 @@ void i2c_master_init(i2c_master_bus_handle_t *bus_handle, i2c_master_dev_handle_
 
 esp_err_t tfa9879_init(void){
 
-    //TODO
+    ESP_LOGI("TFA9879","initializing I2C bus");
+    i2c_master_init(&bus_handle, &dev_handle);
+
+    tfa9879_register_write_byte(dev_handle, 0x00, 0x0008);
+    tfa9879_register_write_byte(dev_handle, 0x00, 0x0009);
+    tfa9879_register_write_byte(dev_handle, 0x01, 0x08D0);
+    tfa9879_register_write_byte(dev_handle, 0x13, 0x1080);
+
+    ESP_LOGI("TFA9879","initializing I2S bus");
+    i2s_init(&i2s_chan_handle);
+
     return ESP_OK;
 }
 

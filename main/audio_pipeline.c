@@ -24,7 +24,7 @@ esp_err_t audio_pipeline_init(void){
             return ret;
         }
 
-        //TODO: init tfa9879
+        // init tfa9879
         ret = tfa9879_init();
         if(ret != ESP_OK){
             ESP_LOGE("PIPELINE", "Failed to initialize tfa9879 card");

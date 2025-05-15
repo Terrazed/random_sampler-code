@@ -10,7 +10,6 @@
 #include "esp_vfs_fat.h"
 #include "driver/sdspi_host.h"
 #include "esp_log.h"
-#include "sd_pwr_ctrl_by_on_chip_ldo.h"
 #include <stdint.h>
 #include <sys/unistd.h>
 
@@ -32,6 +31,9 @@ esp_err_t sdcard_init(void);
 esp_err_t sdcard_open(const char *path);
 esp_err_t sdcard_read(uint8_t* const buffer, const uint32_t buffer_size);
 esp_err_t sdcard_close();
+
+esp_err_t sdcard_power_up();
+esp_err_t sdcard_power_down();
 
 esp_err_t s_example_read_file(const char *path);
 
