@@ -12,6 +12,8 @@
 #include "esp_log.h"
 #include <stdint.h>
 #include <sys/unistd.h>
+#include "soc/gpio_num.h"
+#include "esp_private/gpio.h"
 
 
 // SD SPI pins

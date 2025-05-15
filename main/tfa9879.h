@@ -10,6 +10,10 @@
 #include "hal/i2s_types.h"
 #include <stdint.h>
 #include "esp_err.h"
+#include "soc/gpio_num.h"
+#include "esp_private/gpio.h"
+
+#define TFA9879_POWER_IO            GPIO_NUM_4
 
 #define I2C_MASTER_SCL_IO           GPIO_NUM_8             /*!< GPIO number used for I2C master clock */
 #define I2C_MASTER_SDA_IO           GPIO_NUM_9             /*!< GPIO number used for I2C master data  */

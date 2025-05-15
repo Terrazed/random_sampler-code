@@ -1,5 +1,6 @@
 #include "tfa9879.h"
 
+#include "driver/gpio.h"
 #include "driver/i2s_types.h"
 #include "esp_log.h"
 
@@ -35,6 +36,26 @@ void i2c_master_init(i2c_master_bus_handle_t *bus_handle, i2c_master_dev_handle_
 }
 
 esp_err_t tfa9879_init(void){
+    esp_err_t ret;
+
+    ESP_LOGI("TFA9879","configuring TFA9879_POWER_IO");
+    ret = gpio_func_sel(TFA9879_POWER_IO, 1);
+    if(ret != ESP_OK) {
+        ESP_LOGE("TFA9879","Failed to configure TFA9879_POWER_IO");
+        return ret;
+    }
+    ret = gpio_set_direction(TFA9879_POWER_IO, GPIO_MODE_OUTPUT);
+    if(ret != ESP_OK) {
+        ESP_LOGE("TFA9879","Failed to set direction for TFA9879_POWER_IO");
+        return ret;
+    }
+    ESP_LOGI("TFA9879","done configuring TFA9879_POWER_IO");
+
+    ret = tfa9879_power_up();
+    if(ret != ESP_OK) {
+        return ret;
+    }
+
 
     ESP_LOGI("TFA9879","initializing I2C bus");
     i2c_master_init(&bus_handle, &dev_handle);
@@ -47,7 +68,32 @@ esp_err_t tfa9879_init(void){
     ESP_LOGI("TFA9879","initializing I2S bus");
     i2s_init(&i2s_chan_handle);
 
-    return ESP_OK;
+
+    ret = tfa9879_power_down();
+    if(ret != ESP_OK) {
+        return ret;
+    }
+
+    return ret;
+}
+
+esp_err_t tfa9879_power_up(){
+    esp_err_t ret;
+    ESP_LOGI("TFA9879", "powering up amplifier");
+    ret = gpio_set_level(TFA9879_POWER_IO, 1);
+    if(ret != ESP_OK){
+        ESP_LOGE("TFA9879", "Failed to set level for TFA_POWER_IO");
+    }
+    return ret;
+}
+esp_err_t tfa9879_power_down(){
+    esp_err_t ret;
+    ESP_LOGI("TFA9879", "Powering down amplifier");
+    ret = gpio_set_level(TFA9879_POWER_IO, 0);
+    if(ret != ESP_OK){
+        ESP_LOGE("TFA9879", "Failed to set level for TFA_POWER_IO");
+    }
+    return ret;
 }
 
 
