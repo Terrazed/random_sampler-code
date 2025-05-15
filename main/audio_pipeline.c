@@ -78,6 +78,8 @@ void audio_pipeline_play_file_task(const char *path){
 
     ESP_LOGI("PIPELINE","free pipeline");
     xSemaphoreGive(sem_pipeline);
+
+    vTaskDelete(NULL);
 }
 
 void audio_pipeline_i2s_task(void* sem_end_task){
@@ -100,6 +102,7 @@ void audio_pipeline_i2s_task(void* sem_end_task){
 
     //notify task end
     xSemaphoreGive(*sem);
+    vTaskDelete(NULL);
 }
 void audio_pipeline_sd_task(void* sem_end_task){
     SemaphoreHandle_t* sem = sem_end_task;
@@ -119,4 +122,5 @@ void audio_pipeline_sd_task(void* sem_end_task){
 
     //notify task end
     xSemaphoreGive(*sem);
+    vTaskDelete(NULL);
 }
