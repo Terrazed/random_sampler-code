@@ -1,5 +1,6 @@
 #include "tfa9879.h"
 
+#include "driver/i2s_types.h"
 #include "esp_log.h"
 
 #include "test_audio.h" // audio file for testing bc the sd card doesnt work yet
@@ -76,7 +77,17 @@ void i2s_init(i2s_chan_handle_t * tx_chan){
 
 void tfa9879_play(const uint8_t* const array, const uint32_t buffer_size){
 
-    // TODO
+    uint32_t byte_written = 0;
+
+    ESP_ERROR_CHECK(i2s_channel_enable(i2s_chan_handle));
+
+    if (i2s_channel_write(i2s_chan_handle, array, buffer_size, &byte_written, 100) == ESP_OK) {
+        ESP_LOGI("TFA9879", "Write Task: i2s write %d bytes", byte_written);
+    } else {
+        ESP_LOGE("TFA9879", "Write Task: i2s write failed");
+    }
+
+    ESP_ERROR_CHECK(i2s_channel_disable(i2s_chan_handle));
 
 }
 
