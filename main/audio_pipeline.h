@@ -9,20 +9,20 @@
 #include "sdcard.h"
 #include "tfa9879.h"
 
-#define AUDIO_BUFFER_SIZE 256
+#define AUDIO_BUFFER_SIZE 16000
 
 struct audio_buffer_t {
     uint8_t array[AUDIO_BUFFER_SIZE];
     SemaphoreHandle_t semaphore;
 };
 
-struct audio_buffer_t  buffer[2];
+extern struct audio_buffer_t  buffer[2];
 
-SemaphoreHandle_t sem_pipeline;
-SemaphoreHandle_t sem_sd;
-SemaphoreHandle_t sem_i2s;
+extern SemaphoreHandle_t sem_pipeline;
+extern SemaphoreHandle_t sem_sd;
+extern SemaphoreHandle_t sem_i2s;
 
-bool pipeline_initialized = false;
+extern bool pipeline_initialized;
 
 
 esp_err_t audio_pipeline_init(void);

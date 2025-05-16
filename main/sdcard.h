@@ -39,6 +39,7 @@ esp_err_t sdcard_power_down();
 
 esp_err_t s_example_read_file(const char *path);
 
-FILE* work_file = NULL;
+extern FILE* work_file;
+extern sdmmc_card_t *card;
 
 #endif

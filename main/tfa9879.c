@@ -4,8 +4,12 @@
 #include "driver/i2s_types.h"
 #include "esp_log.h"
 
-#include "test_audio.h" // audio file for testing bc the sd card doesnt work yet
+//#include "test_audio.h" // audio file for testing bc the sd card doesnt work yet
 #include <stdint.h>
+
+i2c_master_bus_handle_t bus_handle;
+i2c_master_dev_handle_t dev_handle;
+i2s_chan_handle_t i2s_chan_handle;
 
 esp_err_t tfa9879_register_read(i2c_master_dev_handle_t dev_handle, uint8_t reg_addr, uint8_t *data, size_t len){
     return i2c_master_transmit_receive(dev_handle, &reg_addr, 1, data, len, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
@@ -55,6 +59,7 @@ esp_err_t tfa9879_init(void){
     if(ret != ESP_OK) {
         return ret;
     }
+    //vTaskDelay(10 / portTICK_PERIOD_MS);
 
 
     ESP_LOGI("TFA9879","initializing I2C bus");
@@ -63,16 +68,19 @@ esp_err_t tfa9879_init(void){
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0008);
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0009);
     tfa9879_register_write_byte(dev_handle, 0x01, 0x08D0);
-    tfa9879_register_write_byte(dev_handle, 0x13, 0x1080);
+    tfa9879_register_write_byte(dev_handle, 0x13, 0x10A0);
+
+    //uint8_t data[2];
+    //for(int i = 0; i<=0x15; i++){
+    //    ESP_ERROR_CHECK(tfa9879_register_read(dev_handle, i, data, 0x02));
+    //    ESP_LOGI("I2C","reg 0x%02x value 0x%02x%02x", i, data[0], data[1]);
+    //}
 
     ESP_LOGI("TFA9879","initializing I2S bus");
     i2s_init(&i2s_chan_handle);
 
 
-    ret = tfa9879_power_down();
-    if(ret != ESP_OK) {
-        return ret;
-    }
+    //ret = tfa9879_power_down();
 
     return ret;
 }
@@ -84,6 +92,7 @@ esp_err_t tfa9879_power_up(){
     if(ret != ESP_OK){
         ESP_LOGE("TFA9879", "Failed to set level for TFA_POWER_IO");
     }
+    vTaskDelay(1 / portTICK_PERIOD_MS);
     return ret;
 }
 esp_err_t tfa9879_power_down(){
@@ -125,44 +134,44 @@ void tfa9879_play(const uint8_t* const array, const uint32_t buffer_size){
 
     uint32_t byte_written = 0;
 
-    ESP_ERROR_CHECK(i2s_channel_enable(i2s_chan_handle));
+    //ESP_ERROR_CHECK(i2s_channel_enable(i2s_chan_handle));
 
-    if (i2s_channel_write(i2s_chan_handle, array, buffer_size, &byte_written, 100) == ESP_OK) {
+    if (i2s_channel_write(i2s_chan_handle, array, buffer_size, &byte_written, 10000) == ESP_OK) {
         ESP_LOGI("TFA9879", "Write Task: i2s write %d bytes", byte_written);
     } else {
         ESP_LOGE("TFA9879", "Write Task: i2s write failed");
     }
 
-    ESP_ERROR_CHECK(i2s_channel_disable(i2s_chan_handle));
+    //ESP_ERROR_CHECK(i2s_channel_disable(i2s_chan_handle));
 
 }
 
-void i2s_write_task(void *args){
-
-    i2s_chan_handle_t *tx_chan = (i2s_chan_handle_t *)args;
-
-    size_t w_bytes = 0;
-
-    uint8_t *w_buf = (uint8_t *)(test_audio+80);
-
-
-    //while (w_bytes == DATA_SIZE) {
-    //    /* Here we load the target buffer repeatedly, until all the DMA buffers are preloaded */
-    //    ESP_ERROR_CHECK(i2s_channel_preload_data(*tx_chan, w_buf, DATA_SIZE, &w_bytes));
-    //}
-
-    /* Enable the TX channel */
-    ESP_ERROR_CHECK(i2s_channel_enable(*tx_chan));
-
-    while (1) {
-        /* Write i2s data */
-        if (i2s_channel_write(*tx_chan, w_buf, DATA_SIZE, &w_bytes, 10000) == ESP_OK) {
-            ESP_LOGI("I2S", "Write Task: i2s write %d bytes", w_bytes);
-        } else {
-            ESP_LOGE("I2S", "Write Task: i2s write failed");
-        }
-    }
-
-    ESP_ERROR_CHECK(i2s_channel_disable(*tx_chan));
-    vTaskDelete(NULL);
-}
+//void i2s_write_task(void *args){
+//
+//    i2s_chan_handle_t *tx_chan = (i2s_chan_handle_t *)args;
+//
+//    size_t w_bytes = 0;
+//
+//    uint8_t *w_buf = (uint8_t *)(test_audio+80);
+//
+//
+//    //while (w_bytes == DATA_SIZE) {
+//    //    /* Here we load the target buffer repeatedly, until all the DMA buffers are preloaded */
+//    //    ESP_ERROR_CHECK(i2s_channel_preload_data(*tx_chan, w_buf, DATA_SIZE, &w_bytes));
+//    //}
+//
+//    /* Enable the TX channel */
+//    ESP_ERROR_CHECK(i2s_channel_enable(*tx_chan));
+//
+//    while (1) {
+//        /* Write i2s data */
+//        if (i2s_channel_write(*tx_chan, w_buf, DATA_SIZE, &w_bytes, 10000) == ESP_OK) {
+//            ESP_LOGI("I2S", "Write Task: i2s write %d bytes", w_bytes);
+//        } else {
+//            ESP_LOGE("I2S", "Write Task: i2s write failed");
+//        }
+//    }
+//
+//    ESP_ERROR_CHECK(i2s_channel_disable(*tx_chan));
+//    vTaskDelete(NULL);
+//}

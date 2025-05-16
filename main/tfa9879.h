@@ -30,9 +30,9 @@
 #define I2S_DOUT_IO                 GPIO_NUM_19            /*!< GPIO number used for I2S DATA OUT */
 
 
-i2c_master_bus_handle_t bus_handle;
-i2c_master_dev_handle_t dev_handle;
-i2s_chan_handle_t i2s_chan_handle;
+extern i2c_master_bus_handle_t bus_handle;
+extern i2c_master_dev_handle_t dev_handle;
+extern i2s_chan_handle_t i2s_chan_handle;
 
 /**
  * @brief Read a sequence of bytes from a TFA9879 registers

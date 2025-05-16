@@ -5,6 +5,13 @@
 #include "sdcard.h"
 #include "tfa9879.h"
 
+
+struct audio_buffer_t  buffer[2];
+SemaphoreHandle_t sem_pipeline;
+SemaphoreHandle_t sem_sd;
+SemaphoreHandle_t sem_i2s;
+bool pipeline_initialized = false;
+
 esp_err_t audio_pipeline_init(void){
     esp_err_t ret;
     if(!pipeline_initialized){
@@ -12,10 +19,26 @@ esp_err_t audio_pipeline_init(void){
         ESP_LOGI("PIPELINE", "Creating semaphores");
         for(uint8_t i=0; i<2; i++){
             buffer[i].semaphore = xSemaphoreCreateBinary();
+            xSemaphoreGive(buffer[i].semaphore);
+
         }
         sem_pipeline = xSemaphoreCreateBinary();
+        if(sem_pipeline == NULL){
+            ESP_LOGE("PIPELINE", "sem_pipeline not created - insufficient heap");
+        }
+        xSemaphoreGive(sem_pipeline);
+
         sem_sd = xSemaphoreCreateBinary();
+        if(sem_sd == NULL){
+            ESP_LOGE("PIPELINE", "sem_sd not created - insufficient heap");
+        }
+        xSemaphoreGive(sem_sd);
+
         sem_i2s = xSemaphoreCreateBinary();
+        if(sem_i2s == NULL){
+            ESP_LOGE("PIPELINE", "sem_i2s not created - insufficient heap");
+        }
+        xSemaphoreGive(sem_i2s);
 
         // init SD card
         ret = sdcard_init();
@@ -23,6 +46,7 @@ esp_err_t audio_pipeline_init(void){
             ESP_LOGE("PIPELINE", "Failed to initialize SD card");
             return ret;
         }
+        sdcard_power_up();
 
         // init tfa9879
         ret = tfa9879_init();
@@ -30,6 +54,7 @@ esp_err_t audio_pipeline_init(void){
             ESP_LOGE("PIPELINE", "Failed to initialize tfa9879 card");
             return ret;
         }
+        tfa9879_power_up();
 
         pipeline_initialized = true;
     }
@@ -59,11 +84,11 @@ void audio_pipeline_play_file(const char *path){
 
     xSemaphoreTake(sem_i2s, portMAX_DELAY);
     ESP_LOGI("PIPELINE","launch i2s loop");
-    xTaskCreate(audio_pipeline_i2s_task, "audio_pipeline_i2s_task", 2048, &sem_i2s, 5, NULL);
+    xTaskCreate(audio_pipeline_i2s_task, "audio_pipeline_i2s_task", 16384, &sem_i2s, 5, NULL);
 
     xSemaphoreTake(sem_sd, portMAX_DELAY);
     ESP_LOGI("PIPELINE","launch sd loop");
-    xTaskCreate(audio_pipeline_sd_task, "audio_pipeline_sd_task", 2048, &sem_sd, 5, NULL);
+    xTaskCreate(audio_pipeline_sd_task, "audio_pipeline_sd_task", 16384, &sem_sd, 5, NULL);
 
     ESP_LOGI("PIPELINE","wait sd loop to end");
     xSemaphoreTake(sem_sd, portMAX_DELAY);
@@ -85,8 +110,8 @@ void audio_pipeline_play_file(const char *path){
 void audio_pipeline_i2s_task(void* sem_end_task){
     SemaphoreHandle_t* sem = sem_end_task;
 
-
     xSemaphoreTake(buffer[0].semaphore, portMAX_DELAY);
+    ESP_ERROR_CHECK(i2s_channel_enable(i2s_chan_handle));
 
     while(true){
         ESP_LOGI("PIPELINE","i2s play buffer 0");
@@ -99,13 +124,14 @@ void audio_pipeline_i2s_task(void* sem_end_task){
         xSemaphoreTake(buffer[0].semaphore, portMAX_DELAY);
         xSemaphoreGive(buffer[1].semaphore);
     }
+    ESP_ERROR_CHECK(i2s_channel_disable(i2s_chan_handle));
 
     //notify task end
     xSemaphoreGive(*sem);
 }
+
 void audio_pipeline_sd_task(void* sem_end_task){
     SemaphoreHandle_t* sem = sem_end_task;
-
 
     while(true){
         ESP_LOGI("PIPELINE","sd load in buffer 1");
