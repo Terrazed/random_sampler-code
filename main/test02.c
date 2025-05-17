@@ -122,12 +122,12 @@ void app_main(void)
     //esp_log_level_set("*", ESP_LOG_ERROR);
 
     audio_pipeline_init();
-    audio_pipeline_play_file("/sdcard/samples/sample_0.wav");
 
 
     while (true) {
 
-        ESP_LOGI("main", "main loop");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        audio_pipeline_play_file("/sdcard/samples/sample_0.wav");
+
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 }

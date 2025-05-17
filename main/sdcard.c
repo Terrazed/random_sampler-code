@@ -89,20 +89,9 @@ esp_err_t sdcard_open(const char *path){
     return ret;
 }
 
-esp_err_t sdcard_read(uint8_t* const buffer, const uint32_t buffer_size){
-    esp_err_t ret = ESP_OK;
-    ESP_LOGI("SD","1");
+bool sdcard_read(uint8_t* const buffer, const uint32_t buffer_size){
     fread(buffer, 1, buffer_size, work_file);
-    if(feof(work_file) != 0) {
-        //TODO: stop reading
-    }
-    ESP_LOGI("SD","2");
-
-    //for (int16_t i = 0; i<buffer_size; i++){
-    //    printf("0x%02x, ", buffer[i]);
-    //}
-
-    return ret;
+    return feof(work_file);
 }
 
 esp_err_t sdcard_close(){

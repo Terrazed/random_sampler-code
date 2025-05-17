@@ -68,7 +68,7 @@ esp_err_t tfa9879_init(void){
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0008);
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0009);
     tfa9879_register_write_byte(dev_handle, 0x01, 0x08D0);
-    tfa9879_register_write_byte(dev_handle, 0x13, 0x10A0);
+    tfa9879_register_write_byte(dev_handle, 0x13, 0x1080);
 
     //uint8_t data[2];
     //for(int i = 0; i<=0x15; i++){

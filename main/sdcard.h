@@ -31,7 +31,7 @@
 esp_err_t sdcard_init(void);
 
 esp_err_t sdcard_open(const char *path);
-esp_err_t sdcard_read(uint8_t* const buffer, const uint32_t buffer_size);
+bool sdcard_read(uint8_t* const buffer, const uint32_t buffer_size);
 esp_err_t sdcard_close();
 
 esp_err_t sdcard_power_up();
