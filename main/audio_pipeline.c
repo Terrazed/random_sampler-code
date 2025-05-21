@@ -133,6 +133,8 @@ void audio_pipeline_i2s_task(void* sem_end_task){
         struct audio_buffer_t* currentbuffer;
         xQueueReceive(msgq_i2s, &currentbuffer, portMAX_DELAY);
 
+        xSemaphoreTake(currentbuffer->semaphore, portMAX_DELAY);
+
         if(currentbuffer->next_buffer == NULL){
             continue_loop = false;
         }
@@ -142,7 +144,7 @@ void audio_pipeline_i2s_task(void* sem_end_task){
             }
         }
 
-        xSemaphoreTake(currentbuffer->semaphore, portMAX_DELAY);
+
         tfa9879_play(currentbuffer->array, sizeof(currentbuffer->array));
         xSemaphoreGive(currentbuffer->semaphore);
 
@@ -166,12 +168,14 @@ void audio_pipeline_sd_task(void* sem_end_task){
 
         xSemaphoreTake(currentbuffer->semaphore, portMAX_DELAY);
         bool eof = sdcard_read(currentbuffer->array, sizeof(currentbuffer->array));
-        xSemaphoreGive(currentbuffer->semaphore);
+
 
         if(eof != 0){
             continue_loop = false;
             currentbuffer->next_buffer = NULL;
         }
+
+        xSemaphoreGive(currentbuffer->semaphore);
 
         if(xQueueSend(msgq_i2s, &currentbuffer, 0) == errQUEUE_FULL){
             ESP_LOGE("SD_TASK", "no space in buffer !");
