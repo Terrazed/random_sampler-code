@@ -4,6 +4,7 @@
 #include "freertos/idf_additions.h"
 #include "sdcard.h"
 #include "tfa9879.h"
+#include "wav_decoder.h"
 #include <string.h>
 
 
@@ -92,6 +93,8 @@ void audio_pipeline_play_file(const char *path){
     ESP_LOGI("PIPELINE","lock pipeline");
     xSemaphoreTake(sem_pipeline, portMAX_DELAY);
 
+
+
     buffer[0].next_buffer = &(buffer[1]);
     buffer[1].next_buffer = &(buffer[0]);
 
@@ -101,11 +104,15 @@ void audio_pipeline_play_file(const char *path){
     ESP_LOGI("PIPELINE","reading header");
     uint8_t wav_info[88];
     sdcard_read(wav_info, sizeof(wav_info));
-    ESP_LOGI("PIPELINE", "%s :", path);
-    for(int i = 0; i<sizeof(wav_info); i++){
-        printf("%2u: %02x/%2c\n", i+1, wav_info[i], wav_info[i]);
-    }
-    printf("\r\n");
+
+    struct wav_data_t wav_data;
+    set_wav_data_from_wav_header_array(&wav_data, wav_info, sizeof(wav_info));
+
+    //ESP_LOGI("PIPELINE", "%s :", path);
+    //for(int i = 0; i<sizeof(wav_info); i++){
+    //    printf("%2u: %02x/%2c\n", i+1, wav_info[i], wav_info[i]);
+    //}
+    //printf("\r\n");
 
     xSemaphoreTake(sem_sd, portMAX_DELAY);
     xTaskCreate(audio_pipeline_sd_task, "pipe_sd_task", 16384, &sem_sd, 5, &sd_task);
