@@ -10,6 +10,7 @@
 i2c_master_bus_handle_t bus_handle;
 i2c_master_dev_handle_t dev_handle;
 i2s_chan_handle_t i2s_chan_handle;
+uint32_t byte_written = 0;
 
 esp_err_t tfa9879_register_read(i2c_master_dev_handle_t dev_handle, uint8_t reg_addr, uint8_t *data, size_t len){
     return i2c_master_transmit_receive(dev_handle, &reg_addr, 1, data, len, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
@@ -67,8 +68,8 @@ esp_err_t tfa9879_init(void){
 
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0008);
     tfa9879_register_write_byte(dev_handle, 0x00, 0x0009);
-    tfa9879_register_write_byte(dev_handle, 0x01, 0x08D0);
-    tfa9879_register_write_byte(dev_handle, 0x13, 0x1080);
+    tfa9879_register_write_byte(dev_handle, 0x01, 0x0A10);
+    tfa9879_register_write_byte(dev_handle, 0x13, 0x1050);
 
     //uint8_t data[2];
     //for(int i = 0; i<=0x15; i++){
@@ -111,7 +112,7 @@ void i2s_init(i2s_chan_handle_t * tx_chan){
     ESP_ERROR_CHECK(i2s_new_channel(&tx_chan_cfg, tx_chan, NULL));
 
     i2s_std_config_t tx_std_cfg = {
-        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(16000),
+        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(48000),
         .slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO),
         .gpio_cfg = {
             .mclk = I2S_GPIO_UNUSED,    // some codecs may require mclk signal, this example doesn't need it
@@ -130,19 +131,13 @@ void i2s_init(i2s_chan_handle_t * tx_chan){
 }
 
 
-void tfa9879_play(const uint8_t* const array, const uint32_t buffer_size){
-
-    uint32_t byte_written = 0;
-
-    //ESP_ERROR_CHECK(i2s_channel_enable(i2s_chan_handle));
-
+uint32_t* tfa9879_play(const uint8_t* const array, const uint32_t buffer_size){
     if (i2s_channel_write(i2s_chan_handle, array, buffer_size, &byte_written, 10000) == ESP_OK) {
-        ESP_LOGI("TFA9879", "Write Task: i2s write %d bytes", byte_written);
+        //ESP_LOGI("TFA9879", "Write Task: i2s write %d bytes", byte_written);
     } else {
         ESP_LOGE("TFA9879", "Write Task: i2s write failed");
     }
-
-    //ESP_ERROR_CHECK(i2s_channel_disable(i2s_chan_handle));
+    return &byte_written;
 
 }
 

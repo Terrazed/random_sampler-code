@@ -34,6 +34,8 @@ extern i2c_master_bus_handle_t bus_handle;
 extern i2c_master_dev_handle_t dev_handle;
 extern i2s_chan_handle_t i2s_chan_handle;
 
+extern uint32_t byte_written;
+
 /**
  * @brief Read a sequence of bytes from a TFA9879 registers
  */
@@ -66,7 +68,7 @@ void i2s_init(i2s_chan_handle_t * tx_chan);
 /**
  * @brief tasks that send audio to tfa9879
  */
- void tfa9879_play(const uint8_t* const array, const uint32_t buffer_size);
+ uint32_t* tfa9879_play(const uint8_t* const array, const uint32_t buffer_size);
 
 
  void i2s_write_task(void *args);

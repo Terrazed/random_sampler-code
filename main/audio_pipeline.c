@@ -4,6 +4,7 @@
 #include "freertos/idf_additions.h"
 #include "sdcard.h"
 #include "tfa9879.h"
+#include <string.h>
 
 
 struct audio_buffer_t  buffer[2];
@@ -97,6 +98,15 @@ void audio_pipeline_play_file(const char *path){
     ESP_LOGI("PIPELINE","open sd");
     sdcard_open(path);
 
+    ESP_LOGI("PIPELINE","reading header");
+    uint8_t wav_info[88];
+    sdcard_read(wav_info, sizeof(wav_info));
+    ESP_LOGI("PIPELINE", "%s :", path);
+    for(int i = 0; i<sizeof(wav_info); i++){
+        printf("%2u: %02x/%2c\n", i+1, wav_info[i], wav_info[i]);
+    }
+    printf("\r\n");
+
     xSemaphoreTake(sem_sd, portMAX_DELAY);
     xTaskCreate(audio_pipeline_sd_task, "pipe_sd_task", 16384, &sem_sd, 5, &sd_task);
 
@@ -142,10 +152,9 @@ void audio_pipeline_i2s_task(void* sem_end_task){
             if(xQueueSend(msgq_sd, &(currentbuffer->next_buffer), 0) == errQUEUE_FULL){
                 ESP_LOGE("I2S_TASK", "no space in buffer !");
             }
+            tfa9879_play(currentbuffer->array, sizeof(currentbuffer->array));
         }
 
-
-        tfa9879_play(currentbuffer->array, sizeof(currentbuffer->array));
         xSemaphoreGive(currentbuffer->semaphore);
 
 

@@ -126,7 +126,13 @@ void app_main(void)
 
     while (true) {
 
-        audio_pipeline_play_file("/sdcard/samples/sample_0.wav");
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo_16000.wav");
+        //audio_pipeline_play_file("/sdcard/samples/mockingbird_16000.wav");
+        audio_pipeline_play_file("/sdcard/samples/king_of_speed_16000.wav");
+        //audio_pipeline_play_file("/sdcard/samples/sample_0.wav");
+        audio_pipeline_play_file("/sdcard/samples/veridis_quo_auto.wav");
+        audio_pipeline_play_file("/sdcard/samples/mockingbird_auto.wav");
+        audio_pipeline_play_file("/sdcard/samples/king_of_speed_auto.wav");
 
         vTaskDelay(2000 / portTICK_PERIOD_MS);
     }

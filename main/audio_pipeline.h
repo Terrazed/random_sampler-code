@@ -10,7 +10,7 @@
 #include "sdcard.h"
 #include "tfa9879.h"
 
-#define AUDIO_BUFFER_SIZE 4096*4
+#define AUDIO_BUFFER_SIZE  4096*4
 
 struct audio_buffer_t {
     uint8_t array[AUDIO_BUFFER_SIZE];
