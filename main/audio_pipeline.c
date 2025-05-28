@@ -90,6 +90,8 @@ void audio_pipeline_play_file(const char *path){
         return;
     }
 
+    esp_err_t err;
+
     ESP_LOGI("PIPELINE","lock pipeline");
     xSemaphoreTake(sem_pipeline, portMAX_DELAY);
 
@@ -99,20 +101,36 @@ void audio_pipeline_play_file(const char *path){
     buffer[1].next_buffer = &(buffer[0]);
 
     ESP_LOGI("PIPELINE","open sd");
-    sdcard_open(path);
+    err = sdcard_open(path);
+    if(err != ESP_OK){
+        xSemaphoreGive(sem_pipeline);
+        return;
+    }
 
+    //get wav header
     ESP_LOGI("PIPELINE","reading header");
     uint8_t wav_info[88];
-    sdcard_read(wav_info, sizeof(wav_info));
+    err = sdcard_read(wav_info, sizeof(wav_info));
+    if(err != ESP_OK){
+        xSemaphoreGive(sem_pipeline);
+        return;
+    }
 
+    //parse wav header
     struct wav_data_t wav_data;
-    set_wav_data_from_wav_header_array(&wav_data, wav_info, sizeof(wav_info));
+    err = set_wav_data_from_wav_header_array(&wav_data, wav_info, sizeof(wav_info));
+    if(err != ESP_OK){
+        xSemaphoreGive(sem_pipeline);
+        return;
+    }
 
-    //ESP_LOGI("PIPELINE", "%s :", path);
-    //for(int i = 0; i<sizeof(wav_info); i++){
-    //    printf("%2u: %02x/%2c\n", i+1, wav_info[i], wav_info[i]);
-    //}
-    //printf("\r\n");
+    ESP_LOGW("PIPELINE","sample_rate: %u, bits_per_sample: %u, channel_number: %u", wav_data.sample_rate, wav_data.bits_per_sample, wav_data.channel_number);
+
+    err = tfa9879_config(wav_data.sample_rate, wav_data.bits_per_sample, wav_data.channel_number);
+    if(err != ESP_OK){
+        xSemaphoreGive(sem_pipeline);
+        return;
+    }
 
     xSemaphoreTake(sem_sd, portMAX_DELAY);
     xTaskCreate(audio_pipeline_sd_task, "pipe_sd_task", 16384, &sem_sd, 5, &sd_task);
@@ -123,7 +141,6 @@ void audio_pipeline_play_file(const char *path){
     if(xQueueSend(msgq_sd, &(buffer[1].next_buffer), 0) == errQUEUE_FULL){
         ESP_LOGE("PIPELINE", "no space in buffer !");
     }
-
 
     ESP_LOGI("PIPELINE","wait sd loop to end");
     xSemaphoreTake(sem_sd, portMAX_DELAY);

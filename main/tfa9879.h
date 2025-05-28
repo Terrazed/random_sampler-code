@@ -9,9 +9,11 @@
 #include "driver/i2s_std.h"
 #include "hal/i2s_types.h"
 #include <stdint.h>
+#include <sys/cdefs.h>
 #include "esp_err.h"
 #include "soc/gpio_num.h"
 #include "esp_private/gpio.h"
+#include "tfa9879_i2c_registers.h"
 
 #define TFA9879_POWER_IO            GPIO_NUM_4
 
@@ -28,6 +30,10 @@
 #define I2S_CLK_IO                  GPIO_NUM_18            /*!< GPIO number used for I2S clock */
 #define I2S_WS_IO                   GPIO_NUM_10            /*!< GPIO number used for I2S WS */
 #define I2S_DOUT_IO                 GPIO_NUM_19            /*!< GPIO number used for I2S DATA OUT */
+
+
+
+
 
 
 extern i2c_master_bus_handle_t bus_handle;
@@ -56,7 +62,14 @@ void i2c_master_init(i2c_master_bus_handle_t *bus_handle, i2c_master_dev_handle_
  */
 esp_err_t tfa9879_init(void);
 
+/**
+ * @brief power up the TFA9879 amplifier
+ */
 esp_err_t tfa9879_power_up();
+
+/**
+ * @brief shutdown the TFA9879 amplifier
+ */
 esp_err_t tfa9879_power_down();
 
 
@@ -70,8 +83,11 @@ void i2s_init(i2s_chan_handle_t * tx_chan);
  */
  uint32_t* tfa9879_play(const uint8_t* const array, const uint32_t buffer_size);
 
+ /**
+  * @brief configurev the tfa9879 amplifier
+  */
+  esp_err_t tfa9879_config(const uint32_t sample_rate, uint32_t bits_per_sample, uint32_t channel_number);
 
- void i2s_write_task(void *args);
 
 
 #endif //TFA9879_H

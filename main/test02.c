@@ -14,6 +14,7 @@
 #include "freertos/task.h"
 
 #include "audio_pipeline.h"
+#include "tfa9879.h"
 //#include "tfa9879.h"
 //#include "sdcard.h"
 
@@ -121,21 +122,21 @@ void app_main(void)
 */
     //esp_log_level_set("*", ESP_LOG_ERROR);
 
-    const uint32_t riff = *(uint32_t*)"RIFF";
-
-    ESP_LOGI("test","%x", riff);
-
 
     audio_pipeline_init();
-
 
     while (true) {
 
         //audio_pipeline_play_file("/sdcard/samples/veridis_quo_16000.wav");
         //audio_pipeline_play_file("/sdcard/samples/mockingbird_16000.wav");
         //audio_pipeline_play_file("/sdcard/samples/king_of_speed_16000.wav");
-        //audio_pipeline_play_file("/sdcard/samples/sample_0.wav");
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo.wav");
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo(1).wav");
+        audio_pipeline_play_file("/sdcard/samples/veridis_quo(2).wav");
+        audio_pipeline_play_file("/sdcard/samples/veridis_quo(3).wav");
+        audio_pipeline_play_file("/sdcard/samples/sample_0.wav");
         audio_pipeline_play_file("/sdcard/samples/veridis_quo_auto.wav");
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo_24bit_auto.wav");
         audio_pipeline_play_file("/sdcard/samples/mockingbird_auto.wav");
         audio_pipeline_play_file("/sdcard/samples/king_of_speed_auto.wav");
 

@@ -52,19 +52,16 @@ esp_err_t set_wav_data_from_wav_header_array(struct wav_data_t* output, const ui
             temp_output.bits_per_sample =
                 (wav_header_array[current_position+27]<<8)+
                 (wav_header_array[current_position+26]);
-
-            //ESP_LOGI("WAV", "format_type: %u, channel_number : %u, sample_rate : %u, bits_per_sample : %u, ", temp_output.format_type, temp_output.channel_number, temp_output.sample_rate, temp_output.bits_per_sample);
         }
         else if(!data_found && data == (*((uint32_t*)(&(wav_header_array[current_position]))))){
             //match data
-            ESP_LOGI("WAV", "data position : %u", current_position+4);
+            //ESP_LOGI("WAV", "data position : %u", current_position+4);
             data_found = true;
             temp_output.data_size =
                 (wav_header_array[current_position+7]<<24)+
                 (wav_header_array[current_position+6]<<16)+
                 (wav_header_array[current_position+5]<<8)+
                 (wav_header_array[current_position+4]);
-            ESP_LOGI("WAV", "data size : %u", temp_output.data_size);
         }
     }
 
