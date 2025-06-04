@@ -1,5 +1,6 @@
 #include "sdcard.h"
 #include "esp_err.h"
+#include "freertos/idf_additions.h"
 #include <stdio.h>
 
 sdmmc_card_t *card;
@@ -70,7 +71,7 @@ esp_err_t sdcard_init(void){
     ESP_LOGI("SD", "Filesystem mounted");
 
     // Card has been initialized, print its properties
-    sdmmc_card_print_info(stdout, card);
+    //sdmmc_card_print_info(stdout, card);
 
     //ret = sdcard_power_down();
 

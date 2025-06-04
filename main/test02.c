@@ -14,9 +14,9 @@
 #include "freertos/task.h"
 
 #include "audio_pipeline.h"
-#include "tfa9879.h"
-//#include "tfa9879.h"
-//#include "sdcard.h"
+
+#include "esp_sleep.h"
+
 
 //#define GPIO_POWER_SD GPIO_NUM_5
 //#define GPIO_POWER_AMPLIFIER GPIO_NUM_4
@@ -124,22 +124,39 @@ void app_main(void)
 
 
     audio_pipeline_init();
+    //vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    static RTC_DATA_ATTR int test = 0;
 
     while (true) {
+
+
+
 
         //audio_pipeline_play_file("/sdcard/samples/veridis_quo_16000.wav");
         //audio_pipeline_play_file("/sdcard/samples/mockingbird_16000.wav");
         //audio_pipeline_play_file("/sdcard/samples/king_of_speed_16000.wav");
         //audio_pipeline_play_file("/sdcard/samples/veridis_quo.wav");
         //audio_pipeline_play_file("/sdcard/samples/veridis_quo(1).wav");
-        audio_pipeline_play_file("/sdcard/samples/veridis_quo(2).wav");
-        audio_pipeline_play_file("/sdcard/samples/veridis_quo(3).wav");
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo(2).wav");
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo(3).wav");
         audio_pipeline_play_file("/sdcard/samples/sample_0.wav");
-        audio_pipeline_play_file("/sdcard/samples/veridis_quo_auto.wav");
-        //audio_pipeline_play_file("/sdcard/samples/veridis_quo_24bit_auto.wav");
-        audio_pipeline_play_file("/sdcard/samples/mockingbird_auto.wav");
-        audio_pipeline_play_file("/sdcard/samples/king_of_speed_auto.wav");
 
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        ESP_LOGI("test", "bloup %u", test++);
+
+
+        ESP_LOGI("DEEPSLEEP", "sleep for 1s...");
+        ESP_ERROR_CHECK(esp_sleep_enable_timer_wakeup(2*1000000));
+        esp_deep_sleep_start();
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo_auto.wav");
+        //audio_pipeline_play_file("/sdcard/samples/veridis_quo_24bit_auto.wav");
+        //audio_pipeline_play_file("/sdcard/samples/mockingbird_auto.wav");
+        //audio_pipeline_play_file("/sdcard/samples/king_of_speed_auto.wav");
+
+
+
+
+
+        //vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 }

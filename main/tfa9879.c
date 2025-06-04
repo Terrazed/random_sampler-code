@@ -101,7 +101,7 @@ esp_err_t tfa9879_init(void){
 
     union tfa9879_reg_volume_control reg_volume_control =  {.data =0x0000};
     reg_volume_control.zr_crss = ZERO_CROSSING_VOLUME_CONTROL_ENABLED;
-    reg_volume_control.volume = 0x50;
+    reg_volume_control.volume = 0x30;
     tfa9879_register_write_byte(dev_handle, TFA9879_VOLUME_CONTROL_REGISTER, reg_volume_control.data);
     if(ret != ESP_OK) {
         ESP_LOGE("TFA9879", "failed to write volume control register");
@@ -130,7 +130,7 @@ esp_err_t tfa9879_power_up(){
     if(ret != ESP_OK){
         ESP_LOGE("TFA9879", "Failed to set level for TFA_POWER_IO");
     }
-    vTaskDelay(1 / portTICK_PERIOD_MS);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
     return ret;
 }
 esp_err_t tfa9879_power_down(){
