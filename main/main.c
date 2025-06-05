@@ -113,6 +113,8 @@ void app_main(void)
     err = audio_pipeline_init();
     if(err != ESP_OK){
         ESP_LOGE("MAIN", "Failed to initialize pipeline!");
+        ESP_ERROR_CHECK(esp_sleep_enable_timer_wakeup(1000000));
+        esp_deep_sleep_start();
         return;
     }
 
@@ -124,7 +126,7 @@ void app_main(void)
         uint64_t time_to_sleep_us;
 
         struct tm *temp_current_time = localtime(&current_time);
-        if(temp_current_time->tm_hour < 12){
+        if(temp_current_time->tm_hour < 1/*2*/){
 
             time_to_sleep_us = get_random_time_us();
         }
