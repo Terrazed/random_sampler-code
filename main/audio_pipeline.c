@@ -66,7 +66,7 @@ esp_err_t audio_pipeline_init(void){
             ESP_LOGE("PIPELINE", "Failed to initialize SD card");
             return ret;
         }
-        sdcard_power_up();
+        //sdcard_power_up();
 
         // init tfa9879
         ret = tfa9879_init();
@@ -74,7 +74,7 @@ esp_err_t audio_pipeline_init(void){
             ESP_LOGE("PIPELINE", "Failed to initialize tfa9879 card");
             return ret;
         }
-        tfa9879_power_up();
+        //tfa9879_power_up();
 
         pipeline_initialized = true;
     }
@@ -94,8 +94,6 @@ void audio_pipeline_play_file(const char *path){
 
     ESP_LOGI("PIPELINE","lock pipeline");
     xSemaphoreTake(sem_pipeline, portMAX_DELAY);
-
-
 
     buffer[0].next_buffer = &(buffer[1]);
     buffer[1].next_buffer = &(buffer[0]);

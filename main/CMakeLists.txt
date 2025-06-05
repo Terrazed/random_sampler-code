@@ -1,4 +1,4 @@
-idf_component_register(SRCS "test02.c"
+idf_component_register(SRCS "main.c"
                             "tfa9879.c"
                             "sdcard.c"
                             "audio_pipeline.c"

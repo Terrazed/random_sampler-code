@@ -1,5 +1,6 @@
 #include "sdcard.h"
 #include "esp_err.h"
+#include "ff.h"
 #include "freertos/idf_additions.h"
 #include <stdio.h>
 
@@ -77,6 +78,44 @@ esp_err_t sdcard_init(void){
 
 
     return ret;
+}
+
+
+uint16_t sdcard_count_samples(const char *path){
+    FRESULT fres;
+
+    FF_DIR dir;
+
+    fres = f_opendir(&dir, path);
+    if(fres!=FR_OK){
+        ESP_LOGE("SD", "failed to open dir: %s, FRESULT:%u", path, fres);
+        return 0;
+    }
+
+
+    uint16_t file_n = 0;
+    bool end_of_folder = false;
+    for(uint16_t i = 0; !end_of_folder; i++){
+        FILINFO file_info;
+        fres = f_readdir(&dir, &file_info);
+        if(fres != FR_OK || file_info.fname[0] == 0){
+            if(fres != FR_OK){
+                ESP_LOGE("SD", "f_readdir did not work, FRESULT:%u", fres);
+                return 0;
+            }
+            end_of_folder = true;
+            file_n = i;
+        }
+    }
+
+    fres = f_closedir(&dir);
+    if(fres!=FR_OK){
+        ESP_LOGE("SD", "failed to close dir: %s, FRESULT:%u", path, fres);
+        return 0;
+    }
+
+
+    return file_n;
 }
 
 

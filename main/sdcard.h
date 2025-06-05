@@ -28,7 +28,9 @@
 // SD card mount name
 #define MOUNT_POINT "/sdcard"
 
-esp_err_t sdcard_init(void);
+esp_err_t sdcard_init();
+
+uint16_t sdcard_count_samples(const char *path);
 
 esp_err_t sdcard_open(const char *path);
 bool sdcard_read(uint8_t* const buffer, const uint32_t buffer_size);
@@ -37,7 +39,6 @@ esp_err_t sdcard_close();
 esp_err_t sdcard_power_up();
 esp_err_t sdcard_power_down();
 
-esp_err_t s_example_read_file(const char *path);
 
 extern FILE* work_file;
 extern sdmmc_card_t *card;
