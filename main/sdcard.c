@@ -151,7 +151,7 @@ esp_err_t sdcard_power_up(){
     if(ret != ESP_OK){
         ESP_LOGE("SD", "Failed to set level for SD_PWR_IO");
     }
-    vTaskDelay(1 / portTICK_PERIOD_MS);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
     return ret;
 }
 esp_err_t sdcard_power_down(){
