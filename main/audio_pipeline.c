@@ -122,7 +122,7 @@ void audio_pipeline_play_file(const char *path){
         return;
     }
 
-    ESP_LOGW("PIPELINE","sample_rate: %u, bits_per_sample: %u, channel_number: %u", wav_data.sample_rate, wav_data.bits_per_sample, wav_data.channel_number);
+    ESP_LOGI("PIPELINE","sample_rate: %u, bits_per_sample: %u, channel_number: %u", wav_data.sample_rate, wav_data.bits_per_sample, wav_data.channel_number);
 
     err = tfa9879_config(wav_data.sample_rate, wav_data.bits_per_sample, wav_data.channel_number);
     if(err != ESP_OK){

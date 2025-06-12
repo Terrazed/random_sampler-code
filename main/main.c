@@ -93,9 +93,10 @@ void play_random_sample(){
     char sample_name[256];
     sprintf(sample_name, "/sdcard/samples/sample_%u.wav", random_number);
 
-    //ESP_LOGE("test", "playing %s", sample_name);
+    //ESP_LOGI("test", "playing %s", sample_name);
 
     audio_pipeline_play_file(sample_name);
+    //audio_pipeline_play_file("/sdcard/old/king_of_speed_auto.wav");
 }
 
 
@@ -106,8 +107,8 @@ void app_main(void)
 
 
     time(&current_time);
-    //struct tm *temp_current_time = localtime(&current_time);
-    //ESP_LOGW("time", "current time: %uh %umin %usec, %u/%u/%u", temp_current_time->tm_hour, temp_current_time->tm_min, temp_current_time->tm_sec, temp_current_time->tm_mday, temp_current_time->tm_mon, temp_current_time->tm_year);
+    struct tm *temp_current_time = localtime(&current_time);
+    ESP_LOGI("time", "current time: %uh %umin %usec, %u/%u/%u", temp_current_time->tm_hour, temp_current_time->tm_min, temp_current_time->tm_sec, temp_current_time->tm_mday, temp_current_time->tm_mon, temp_current_time->tm_year);
 
 
     err = audio_pipeline_init();
@@ -126,7 +127,7 @@ void app_main(void)
         uint64_t time_to_sleep_us;
 
         struct tm *temp_current_time = localtime(&current_time);
-        if(temp_current_time->tm_hour < 1/*2*/){
+        if(true){//temp_current_time->tm_hour < 12){
 
             time_to_sleep_us = get_random_time_us();
         }
