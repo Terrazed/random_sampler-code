@@ -38,13 +38,13 @@ uint64_t get_random_time_us(){
     uint32_t u2 = esp_random();
     bootloader_random_disable();
 
-    //convert them to float
+    //convert them to float from 0 to 1
     float uf1 = (float)u1/(float)UINT32_MAX;
     if(uf1 == 0 || uf1 == 1){
         uf1 = 0.5;
     }
     float uf2 = (float)u2/(float)UINT32_MAX;
-    if(uf2 == 0|| uf2 == 1){
+    if(uf2 == 0 || uf2 == 1){
         uf2 = 0.5;
     }
 
@@ -88,7 +88,7 @@ void play_random_sample(){
     uint32_t random_number = esp_random();
     //bootloader_random_disable(); // leave bootloader_random enabled for i2s
 
-    random_number = (uint32_t)((uint64_t)random_number * (uint64_t)n_sample / (uint64_t)UINT32_MAX);
+    random_number = random_number % n_sample;
 
     char sample_name[256];
     sprintf(sample_name, "/sdcard/samples/sample_%u.wav", random_number);
@@ -127,7 +127,7 @@ void app_main(void)
         uint64_t time_to_sleep_us;
 
         struct tm *temp_current_time = localtime(&current_time);
-        if(true){//temp_current_time->tm_hour < 12){
+        if(true){//temp_current_time->tm_hour < 12){ // RTC is not precise enough, it drifts too much to make this work
 
             time_to_sleep_us = get_random_time_us();
         }
