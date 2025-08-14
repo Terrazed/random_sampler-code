@@ -130,7 +130,7 @@ esp_err_t tfa9879_power_up(){
     if(ret != ESP_OK){
         ESP_LOGE("TFA9879", "Failed to set level for TFA_POWER_IO");
     }
-    vTaskDelay(10 / portTICK_PERIOD_MS);
+    vTaskDelay(20 / portTICK_PERIOD_MS);
     return ret;
 }
 esp_err_t tfa9879_power_down(){
